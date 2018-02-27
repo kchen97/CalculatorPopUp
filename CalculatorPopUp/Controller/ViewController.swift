@@ -10,6 +10,16 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    lazy var equalButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("=", for: .normal)
+        button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 50)
+        button.addTarget(self, action: #selector(handleEqual), for: .touchUpInside)
+        
+        return button
+    }()
+    
     let blurEffect: UIVisualEffectView = {
         let effect = UIBlurEffect(style: UIBlurEffectStyle.dark)
         let view = UIVisualEffectView(effect: effect)
@@ -62,11 +72,13 @@ class ViewController: UIViewController {
     }
 
     func setup() {
+        
         view.backgroundColor = UIColor.white
         view.addSubview(container)
         container.addSubview(blurEffect)
         container.addSubview(outputLabel)
         container.addSubview(separator)
+        container.addSubview(equalButton)
         
         container.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 4).isActive = true
         container.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -4).isActive = true
@@ -87,7 +99,29 @@ class ViewController: UIViewController {
         separator.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
         separator.topAnchor.constraint(equalTo: outputLabel.bottomAnchor).isActive = true
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12).isActive = true
+        equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12).isActive = true
+        equalButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        equalButton.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        equalButton.round(UIColor.white.cgColor, 70)
     }
 
+}
+
+extension ViewController {
+    
+    @objc func handleEqual() {
+        print("equal pressed")
+    }
+}
+
+extension UIButton {
+    
+    func round(_ borderColor: CGColor, _ width: CGFloat) {
+        self.layer.borderWidth = 1
+        self.layer.borderColor = borderColor
+        self.layer.cornerRadius = width * 0.5
+    }
 }
 
