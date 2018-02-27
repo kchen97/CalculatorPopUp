@@ -9,13 +9,34 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    let numberButtons: [UIButton] = {
+        var buttonsArray = [UIButton]()
+        
+        for number in 0...9 {
+            let button = UIButton()
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.setTitle("\(number)", for: .normal)
+            button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 20)
+            button.heightAnchor.constraint(equalToConstant: 55).isActive = true
+            button.widthAnchor.constraint(equalToConstant: 55).isActive = true
+            button.round(UIColor.white.cgColor, 55)
+            
+            buttonsArray.append(button)
+        }
+        
+        return buttonsArray
+    }()
+    
     lazy var equalButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("=", for: .normal)
         button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 50)
         button.addTarget(self, action: #selector(handleEqual), for: .touchUpInside)
+        button.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        button.round(UIColor.white.cgColor, 70)
         
         return button
     }()
@@ -102,9 +123,6 @@ class ViewController: UIViewController {
         
         equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12).isActive = true
         equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12).isActive = true
-        equalButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        equalButton.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        equalButton.round(UIColor.white.cgColor, 70)
     }
 
 }
@@ -114,6 +132,7 @@ extension ViewController {
     @objc func handleEqual() {
         print("equal pressed")
     }
+    
 }
 
 extension UIButton {
