@@ -54,14 +54,38 @@
 		8E17494C204532BC00413EA8 /* CalculatorPopUp */ = {
 			isa = PBXGroup;
 			children = (
-				8E17494D204532BC00413EA8 /* AppDelegate.swift */,
-				8E17494F204532BC00413EA8 /* ViewController.swift */,
-				8E174951204532BC00413EA8 /* Main.storyboard */,
+				8E5E0CAD2045330B00114DAC /* Controller */,
+				8E5E0CAC2045330800114DAC /* View */,
+				8E5E0CAB204532FD00114DAC /* Model */,
 				8E174954204532BC00413EA8 /* Assets.xcassets */,
-				8E174956204532BC00413EA8 /* LaunchScreen.storyboard */,
 				8E174959204532BC00413EA8 /* Info.plist */,
 			);
 			path = CalculatorPopUp;
+			sourceTree = "<group>";
+		};
+		8E5E0CAB204532FD00114DAC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		8E5E0CAC2045330800114DAC /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8E174951204532BC00413EA8 /* Main.storyboard */,
+				8E174956204532BC00413EA8 /* LaunchScreen.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8E5E0CAD2045330B00114DAC /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				8E17494D204532BC00413EA8 /* AppDelegate.swift */,
+				8E17494F204532BC00413EA8 /* ViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
