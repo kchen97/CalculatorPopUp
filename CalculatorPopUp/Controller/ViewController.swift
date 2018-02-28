@@ -10,12 +10,17 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    let numbersViewContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.backgroundColor = UIColor.red
         stackView.distribution = .fillEqually
-        stackView.spacing = 15
+        stackView.spacing = 30
         
         return stackView
     }()
@@ -110,7 +115,7 @@ class ViewController: UIViewController {
         container.addSubview(outputLabel)
         container.addSubview(separator)
         container.addSubview(equalButton)
-        container.addSubview(stackView)
+        container.addSubview(numbersViewContainer)
         
         container.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 4).isActive = true
         container.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -4).isActive = true
@@ -132,8 +137,13 @@ class ViewController: UIViewController {
         separator.topAnchor.constraint(equalTo: outputLabel.bottomAnchor).isActive = true
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12).isActive = true
-        equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12).isActive = true
+        equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -10).isActive = true
+        equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10).isActive = true
+        
+        numbersViewContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 10).isActive = true
+        numbersViewContainer.trailingAnchor.constraint(equalTo: equalButton.leadingAnchor, constant: -10).isActive = true
+        numbersViewContainer.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10).isActive = true
+        numbersViewContainer.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 10).isActive = true
         
         setupStackViews()
     }
@@ -147,8 +157,11 @@ extension ViewController {
     }
     
     func setupStackViews() {
-        stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8).isActive = true
+        
+        numbersViewContainer.addSubview(stackView)
+        
+        stackView.centerXAnchor.constraint(equalTo: numbersViewContainer.centerXAnchor).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: numbersViewContainer.bottomAnchor).isActive = true
         stackView.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         stackView.addArrangedSubview(numberButtons[1])
