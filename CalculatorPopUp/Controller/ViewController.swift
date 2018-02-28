@@ -10,6 +10,14 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.backgroundColor = UIColor.red
+        
+        return stackView
+    }()
+    
     let numberButtons: [UIButton] = {
         var buttonsArray = [UIButton]()
         
@@ -100,6 +108,7 @@ class ViewController: UIViewController {
         container.addSubview(outputLabel)
         container.addSubview(separator)
         container.addSubview(equalButton)
+        container.addSubview(stackView)
         
         container.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 4).isActive = true
         container.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -4).isActive = true
@@ -123,6 +132,8 @@ class ViewController: UIViewController {
         
         equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12).isActive = true
         equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12).isActive = true
+        
+        setupStackViews()
     }
 
 }
@@ -133,6 +144,12 @@ extension ViewController {
         print("equal pressed")
     }
     
+    func setupStackViews() {
+        stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: equalButton.leadingAnchor, constant: -8).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 55).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8).isActive = true
+    }
 }
 
 extension UIButton {
