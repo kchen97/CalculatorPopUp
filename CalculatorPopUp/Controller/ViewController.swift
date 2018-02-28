@@ -14,6 +14,8 @@ class ViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.backgroundColor = UIColor.red
+        stackView.distribution = .fillEqually
+        stackView.spacing = 15
         
         return stackView
     }()
@@ -26,9 +28,9 @@ class ViewController: UIViewController {
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setTitle("\(number)", for: .normal)
             button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 20)
-            button.heightAnchor.constraint(equalToConstant: 55).isActive = true
-            button.widthAnchor.constraint(equalToConstant: 55).isActive = true
-            button.round(UIColor.white.cgColor, 55)
+            button.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
+            button.round(UIColor.white.cgColor, 60)
             
             buttonsArray.append(button)
         }
@@ -146,9 +148,12 @@ extension ViewController {
     
     func setupStackViews() {
         stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: equalButton.leadingAnchor, constant: -8).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 55).isActive = true
         stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        stackView.addArrangedSubview(numberButtons[1])
+        stackView.addArrangedSubview(numberButtons[2])
+        stackView.addArrangedSubview(numberButtons[3])
     }
 }
 
