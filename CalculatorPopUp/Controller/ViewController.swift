@@ -10,22 +10,30 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    private var height: CGFloat?
+    
     let numbersViewContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.distribution = .fillEqually
-        stackView.spacing = 30
+    let stackViews: [UIStackView] = {
+        var stackViews = [UIStackView]()
         
-        return stackView
+        for _ in 0..<3 {
+            let stackView = UIStackView()
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            stackView.distribution = .fillEqually
+//            stackView.spacing = 25
+            
+            stackViews.append(stackView)
+        }
+        
+        return stackViews
     }()
     
-    let numberButtons: [UIButton] = {
+    lazy var numberButtons: [UIButton] = {
         var buttonsArray = [UIButton]()
         
         for number in 0...9 {
@@ -33,9 +41,8 @@ class ViewController: UIViewController {
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setTitle("\(number)", for: .normal)
             button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 20)
-            button.heightAnchor.constraint(equalToConstant: 60).isActive = true
-            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
-            button.round(UIColor.white.cgColor, 60)
+            button.addTarget(self, action: #selector(handleValuePressed(sender:)), for: .touchUpInside)
+            button.tag = number
             
             buttonsArray.append(button)
         }
@@ -47,11 +54,8 @@ class ViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("=", for: .normal)
-        button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 50)
+        button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 30)
         button.addTarget(self, action: #selector(handleEqual), for: .touchUpInside)
-        button.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        button.round(UIColor.white.cgColor, 70)
         
         return button
     }()
@@ -67,7 +71,7 @@ class ViewController: UIViewController {
     
     let separator: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.lightGray
+        view.backgroundColor = UIColor.clear
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
         
@@ -77,10 +81,11 @@ class ViewController: UIViewController {
     let outputLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: label.font.fontName, size: 18)
+        label.textColor = UIColor.white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.layer.masksToBounds = true
         label.backgroundColor = UIColor.clear
-        label.text = "Hello"
+        label.text = ""
         label.textAlignment = .right
         
         return label
@@ -101,7 +106,13 @@ class ViewController: UIViewController {
         
         setup()
     }
-
+    
+    override func viewDidAppear(_ animated: Bool) {
+        height = numbersViewContainer.frame.height * 1/4
+        setupStackViews()
+        self.view.layoutIfNeeded()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -120,7 +131,7 @@ class ViewController: UIViewController {
         container.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 4).isActive = true
         container.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -4).isActive = true
         container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        container.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 1/2.5).isActive = true
+        container.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 1/2.3).isActive = true
         
         blurEffect.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
         blurEffect.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
@@ -137,15 +148,14 @@ class ViewController: UIViewController {
         separator.topAnchor.constraint(equalTo: outputLabel.bottomAnchor).isActive = true
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -10).isActive = true
-        equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10).isActive = true
+//        equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8).isActive = true
+//        equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8).isActive = true
         
         numbersViewContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 10).isActive = true
-        numbersViewContainer.trailingAnchor.constraint(equalTo: equalButton.leadingAnchor, constant: -10).isActive = true
+        numbersViewContainer.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -10).isActive = true
         numbersViewContainer.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10).isActive = true
         numbersViewContainer.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 10).isActive = true
         
-        setupStackViews()
     }
 
 }
@@ -156,18 +166,63 @@ extension ViewController {
         print("equal pressed")
     }
     
+    @objc func handleValuePressed(sender: UIButton) {
+        print(sender.tag)
+        
+        outputLabel.text?.append("\(sender.tag)")
+    }
+    
     func setupStackViews() {
         
-        numbersViewContainer.addSubview(stackView)
+        stackViews.forEach { (view) in
+            numbersViewContainer.addSubview(view)
+            view.spacing = self.numbersViewContainer.frame.width/4 - height!
+        }
         
-        stackView.centerXAnchor.constraint(equalTo: numbersViewContainer.centerXAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: numbersViewContainer.bottomAnchor).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        stackViews[0].centerXAnchor.constraint(equalTo: numbersViewContainer.centerXAnchor).isActive = true
+        stackViews[0].bottomAnchor.constraint(equalTo: numbersViewContainer.bottomAnchor).isActive = true
+        stackViews[0].heightAnchor.constraint(equalToConstant: height!).isActive = true
         
-        stackView.addArrangedSubview(numberButtons[1])
-        stackView.addArrangedSubview(numberButtons[2])
-        stackView.addArrangedSubview(numberButtons[3])
+        stackViews[1].centerXAnchor.constraint(equalTo: numbersViewContainer.centerXAnchor).isActive = true
+        stackViews[1].bottomAnchor.constraint(equalTo: stackViews[0].topAnchor, constant: -4).isActive = true
+        stackViews[1].heightAnchor.constraint(equalToConstant: height!).isActive = true
+        
+        stackViews[2].centerXAnchor.constraint(equalTo: numbersViewContainer.centerXAnchor).isActive = true
+        stackViews[2].bottomAnchor.constraint(equalTo: stackViews[1].topAnchor, constant: -4).isActive = true
+        stackViews[2].heightAnchor.constraint(equalToConstant: height!).isActive = true
+        
+        numberButtons.forEach { (button) in
+            let tag = button.tag
+            
+            if tag >= 1 && tag <= 3 {
+                stackViews[0].addArrangedSubview(button)
+            }
+            else if tag >= 4 && tag <= 6 {
+                stackViews[1].addArrangedSubview(button)
+            }
+            else if tag >= 7 && tag <= 9 {
+                stackViews[2].addArrangedSubview(button)
+            }
+        }
+        
+        stackViews[0].addArrangedSubview(equalButton)
+        
+        setupButtonContraints()
     }
+    
+    func setupButtonContraints() {
+        numberButtons.forEach { (button) in
+            
+            button.heightAnchor.constraint(equalToConstant: height!).isActive = true
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: height!).isActive = true
+            button.round(UIColor.white.cgColor, height!)
+        }
+        
+        equalButton.widthAnchor.constraint(equalToConstant: height!).isActive = true
+        equalButton.heightAnchor.constraint(greaterThanOrEqualToConstant: height!).isActive = true
+        equalButton.round(UIColor.white.cgColor, height!)
+    }
+    
 }
 
 extension UIButton {
