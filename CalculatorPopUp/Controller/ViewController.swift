@@ -60,6 +60,16 @@ class ViewController: UIViewController {
         return button
     }()
     
+    lazy var divideButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(handleDivision), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("/", for: .normal)
+        button.titleLabel?.font = UIFont(name: (button.titleLabel?.font.fontName)!, size: 30)
+        
+        return button
+    }()
+    
     let blurEffect: UIVisualEffectView = {
         let effect = UIBlurEffect(style: UIBlurEffectStyle.dark)
         let view = UIVisualEffectView(effect: effect)
@@ -80,7 +90,7 @@ class ViewController: UIViewController {
     
     let outputLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: label.font.fontName, size: 18)
+//        label.font = UIFont(name: label.font.fontName, size: 18)
         label.textColor = UIColor.white
         label.translatesAutoresizingMaskIntoConstraints = false
         label.layer.masksToBounds = true
@@ -108,8 +118,11 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        height = numbersViewContainer.frame.height * 1/4
+        height = numbersViewContainer.frame.height * 1/3
         setupStackViews()
+        outputLabel.font = UIFont(name: outputLabel.font.fontName, size: outputLabel.frame.height * 0.8)
+        outputLabel.leadingAnchor.constraint(equalTo: stackViews[0].leadingAnchor).isActive = true
+        outputLabel.trailingAnchor.constraint(equalTo: stackViews[0].trailingAnchor).isActive = true
         self.view.layoutIfNeeded()
     }
     
@@ -138,9 +151,9 @@ class ViewController: UIViewController {
         blurEffect.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
         blurEffect.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
         
-        outputLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
-        outputLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8).isActive = true
-        outputLabel.heightAnchor.constraint(equalToConstant: 55).isActive = true
+//        outputLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8).isActive = true
+//        outputLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8).isActive = true
+        outputLabel.heightAnchor.constraint(equalToConstant: 75).isActive = true
         outputLabel.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
         
         separator.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
@@ -164,6 +177,10 @@ extension ViewController {
     
     @objc func handleEqual() {
         print("equal pressed")
+    }
+    
+    @objc func handleDivision() {
+        print("Division pressed")
     }
     
     @objc func handleValuePressed(sender: UIButton) {
@@ -192,7 +209,7 @@ extension ViewController {
         numberButtons.forEach { (button) in
             let tag = button.tag
             
-            if tag >= 1 && tag <= 3 {
+            if tag >= 0 && tag <= 3 {
                 stackViews[0].addArrangedSubview(button)
             }
             else if tag >= 4 && tag <= 6 {
@@ -203,7 +220,8 @@ extension ViewController {
             }
         }
         
-        stackViews[0].addArrangedSubview(equalButton)
+        stackViews[1].addArrangedSubview(equalButton)
+        stackViews[2].addArrangedSubview(divideButton)
         
         setupButtonContraints()
     }
@@ -219,6 +237,10 @@ extension ViewController {
         equalButton.widthAnchor.constraint(equalToConstant: height!).isActive = true
         equalButton.heightAnchor.constraint(greaterThanOrEqualToConstant: height!).isActive = true
         equalButton.round(UIColor.white.cgColor, height!)
+        
+        divideButton.widthAnchor.constraint(equalToConstant: height!).isActive = true
+        divideButton.heightAnchor.constraint(greaterThanOrEqualToConstant: height!).isActive = true
+        divideButton.round(UIColor.white.cgColor, height!)
     }
     
 }
