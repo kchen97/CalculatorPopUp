@@ -167,8 +167,6 @@ extension ViewController {
     }
     
     @objc func handleValuePressed(sender: UIButton) {
-        print(sender.tag)
-        
         outputLabel.text?.append("\(sender.tag)")
     }
     
