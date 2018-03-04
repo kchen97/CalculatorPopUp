@@ -8,9 +8,20 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+enum CalculatorState {
+    case input
+    case operation
+}
+
+class CalculatorViewController: UIViewController {
     
     private var height: CGFloat?
+    private var calc = CalculatorModel()
+    var state: CalculatorState = .input {
+        didSet {
+            
+        }
+    }
     
     let numbersViewContainer: UIView = {
         let view = UIView()
@@ -173,10 +184,13 @@ class ViewController: UIViewController {
 
 }
 
-extension ViewController {
+extension CalculatorViewController {
     
     @objc func handleEqual() {
-        print("equal pressed")
+        if let value = Double(outputLabel.text!) {
+            calc.value = value
+            outputLabel.text = calc.addTax()
+        }
     }
     
     @objc func handleDivision() {
