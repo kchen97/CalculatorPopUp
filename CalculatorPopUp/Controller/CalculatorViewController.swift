@@ -7,21 +7,19 @@
 //
 
 import UIKit
+import CoreLocation
 
 enum CalculatorState {
     case input
     case operation
 }
 
-class CalculatorViewController: UIViewController {
+class CalculatorViewController: UIViewController, CLLocationManagerDelegate {
     
     private var height: CGFloat?
     private var calc = CalculatorModel()
-    var state: CalculatorState = .input {
-        didSet {
-            
-        }
-    }
+    private var locManager = CLLocationManager()
+    private var zip: String?
     
     let numbersViewContainer: UIView = {
         let view = UIView()
@@ -137,12 +135,48 @@ class CalculatorViewController: UIViewController {
         self.view.layoutIfNeeded()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        CLGeocoder().reverseGeocodeLocation(manager.location!) { (placemarks, error) in
+            if error != nil {
+                print(error)
+            }
+            
+            if (placemarks?.count)! > 0 {
+                if let pm = placemarks?[0] {
+                    self.zip = pm.postalCode
+                    self.locManager.stopUpdatingLocation()
+                }
+            }
+        }
+        
     }
+    
+}
 
+extension CalculatorViewController {
+    
+    @objc func handleEqual() {
+        if let value = Double(outputLabel.text!), let zip = self.zip {
+            calc.value = value
+            outputLabel.text = calc.addTax(zip)
+        }
+    }
+    
+    @objc func handleDivision() {
+        print("Division pressed")
+    }
+    
+    @objc func handleValuePressed(sender: UIButton) {
+        outputLabel.text?.append("\(sender.tag)")
+    }
+    
     func setup() {
+        
+        locManager.delegate = self
+        locManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+        locManager.requestWhenInUseAuthorization()
+        locManager.startUpdatingLocation()
         
         view.backgroundColor = UIColor.white
         view.addSubview(container)
@@ -162,8 +196,8 @@ class CalculatorViewController: UIViewController {
         blurEffect.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
         blurEffect.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
         
-//        outputLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8).isActive = true
-//        outputLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8).isActive = true
+        //        outputLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8).isActive = true
+        //        outputLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8).isActive = true
         outputLabel.heightAnchor.constraint(equalToConstant: 75).isActive = true
         outputLabel.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
         
@@ -172,33 +206,14 @@ class CalculatorViewController: UIViewController {
         separator.topAnchor.constraint(equalTo: outputLabel.bottomAnchor).isActive = true
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-//        equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8).isActive = true
-//        equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8).isActive = true
+        //        equalButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8).isActive = true
+        //        equalButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8).isActive = true
         
         numbersViewContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 10).isActive = true
         numbersViewContainer.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -10).isActive = true
         numbersViewContainer.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10).isActive = true
         numbersViewContainer.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 10).isActive = true
         
-    }
-
-}
-
-extension CalculatorViewController {
-    
-    @objc func handleEqual() {
-        if let value = Double(outputLabel.text!) {
-            calc.value = value
-            outputLabel.text = calc.addTax()
-        }
-    }
-    
-    @objc func handleDivision() {
-        print("Division pressed")
-    }
-    
-    @objc func handleValuePressed(sender: UIButton) {
-        outputLabel.text?.append("\(sender.tag)")
     }
     
     func setupStackViews() {
@@ -256,7 +271,6 @@ extension CalculatorViewController {
         divideButton.heightAnchor.constraint(greaterThanOrEqualToConstant: height!).isActive = true
         divideButton.round(UIColor.white.cgColor, height!)
     }
-    
 }
 
 extension UIButton {
