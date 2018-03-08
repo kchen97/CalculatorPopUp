@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreLocation
+import Alamofire
+import SwiftyJSON
 
 enum CalculatorState {
     case input
@@ -158,8 +160,25 @@ extension CalculatorViewController {
     
     @objc func handleEqual() {
         if let value = Double(outputLabel.text!), let zip = self.zip {
+            
+            let endpoint = "https://api.taxjar.com/v2/rates/"
+            let headers = ["Authorization:" : "Bearer 772e9b5b4246d9fc65ff4f0362c11916"]
+            let params = ["country" : "CA", "zip" : zip]
+            
             calc.value = value
-            outputLabel.text = calc.addTax(zip)
+            
+            Alamofire.request(endpoint, method: .get, parameters: params, headers: headers).responseJSON { (response) in
+                if response.error != nil {
+                    print(response.error!)
+                }
+                else {
+                    let json = JSON(response.result.value!)
+//                    print(json)
+//                    print(json["rate"]["combined_rate"].doubleValue)
+                    self.outputLabel.text = self.calc.addTax(json["rate"]["combined_rate"].doubleValue)
+                }
+            }
+            
         }
     }
     
@@ -174,7 +193,7 @@ extension CalculatorViewController {
     func setup() {
         
         locManager.delegate = self
-        locManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+        locManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locManager.requestWhenInUseAuthorization()
         locManager.startUpdatingLocation()
         
